@@ -1,0 +1,64 @@
+qword_606060
+size:90*8=720
+
+
+
+struct NormalHeap
+{
+    char* heapname;             /* [0, 8)   */
+    __int64 isused;             /* [8,16)   */
+    __int64 magicx13371337;     /* [16,24)  */
+    char buf[40];               /* [24,64)  */
+    __int64 zero;               /* [64,72)  */
+};
+
+struct SystemHeap
+{
+    char* heapname;             /* [0, 8)   */
+    __int64 isused;             /* [8,16)   */
+    __int64 magicx48694869;     /* [16,24)  */
+    char* current_dir_name;     /* [24,32)  */
+    char* secret_of_heap;       /* [32,40)  */
+    char* user_of_heap;         /* [40,48)  */
+    char* system_of_heap;       /* [48,56)  */
+    __int32 rand_num;           /* [56,60)  */
+    __int32 unused32;           /* [60,64)  */
+    __int64 unused64;           /* [64,72)  */
+};
+
+struct ClockHeap
+{
+    char* heapname;             /* [0, 8)   */
+    __int64 isused;             /* [8,16)   */
+    __int64 magicxDEADBEEF;     /* [16,24)  */
+    struct tm* tmtime;          /* [24,32)  */
+    __int32 year;               /* [32,36)  */
+    __int32 month;              /* [36,40)  */
+    __int32 day;                /* [40,44)  */
+    __int32 hour;               /* [44,48)  */
+    __int32 minute;             /* [48,52)  */
+    __int32 seconds;            /* [52,56)  */
+    __int64 unused[2];          /* [56,72)  */
+};
+
+struct CustomHeap
+{
+    char* heapname;             /* [0, 8)   */
+    __int64 isused;             /* [8,16)   */
+    __int64 magic;              /* [16,24)  */
+    __int64 unused[6];          /* [24,72)  */
+};
+
+
+struct tm
+{
+    0:int tm_sec;   // seconds after the minute - [0, 60] including leap second
+    4:int tm_min;   // minutes after the hour - [0, 59]
+    8:int tm_hour;  // hours since midnight - [0, 23]
+    12:int tm_mday;  // day of the month - [1, 31]
+    16:int tm_mon;   // months since January - [0, 11]
+    20:int tm_year;  // years since 1900
+    24:int tm_wday;  // days since Sunday - [0, 6]
+    28:int tm_yday;  // days since January 1 - [0, 365]
+    32:int tm_isdst; // daylight savings time flag
+};
